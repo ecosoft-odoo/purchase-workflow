@@ -7,7 +7,7 @@ from odoo import fields, models
 class PurchaseOrder(models.Model):
     _inherit = "purchase.order"
 
-    state = fields.Selection(selection_add=[("approved", "Approved")])
+    state = fields.Selection(selection_add=[("approved", "Approved"), ("purchase",)])
     # TODO: inherit state but adding approved state in a position after 'to
     # approve' state.
 
