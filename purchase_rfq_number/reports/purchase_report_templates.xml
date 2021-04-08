@@ -5,11 +5,13 @@
         id="report_purchasequotation_document"
         inherit_id="purchase.report_purchasequotation_document"
     >
-        <xpath expr="//span[@t-field='o.name']" position="attributes">
-            <attribute name="inherit">1</attribute>
-        </xpath>
-        <xpath expr="//span[@t-field='o.name']" position="after">
-            <span t-field="o.rfq_number" />
+        <xpath expr="//span[@t-field='o.name']" position="replace">
+            <t t-if="o.rfq_number != 'New'">
+                <span t-field="o.rfq_number"/>
+            </t>
+            <t t-else="">
+                <span t-field="o.name"/>
+            </t>
         </xpath>
     </template>
 
