@@ -53,7 +53,7 @@ class PurchaseOrder(models.Model):
         )[0]
         return self.env["ir.attachment"].create(
             {
-                "name": "%s.pdf" % (self.rfq_number),
+                "name": "%s.pdf" % (self.name, ),
                 "type": "binary",
                 "datas": base64.encodebytes(rfq_pdf),
                 "res_model": self._name,
