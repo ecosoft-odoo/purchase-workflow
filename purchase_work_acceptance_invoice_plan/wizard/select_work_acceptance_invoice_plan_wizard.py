@@ -17,7 +17,7 @@ class SelectWorkAcceptanceInvoicePlanWizard(models.TransientModel):
         comodel_name="purchase.invoice.plan",
         string="Invoice Plan",
         required=True,
-        domain="[('id', 'in', active_installment_ids)]",
+        domain="[('id', 'in', active_installment_ids), ('installment', '>', 0)]",
         help="List only installment that has not been used in WA (draft, accepted)",
     )
 
