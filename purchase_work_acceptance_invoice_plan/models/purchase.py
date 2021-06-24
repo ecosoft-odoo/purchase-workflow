@@ -8,22 +8,18 @@ class PurchaseOrderLine(models.Model):
     _inherit = "purchase.order.line"
 
     def _get_product_qty(self):
-        installment_id = self._context.get("installment_id", False)
+        installment_id = self.env.context.get("installment_id", False)
+        wa_qty_line_ids = self.env.context.get("wa_qty_line_ids", [])
         if installment_id:
-            installment = self.env["purchase.invoice.plan"].browse(installment_id)
-            return self.product_qty * (installment.percent / 100)
+            if wa_qty_line_ids:
+                qty = self.env["select.work.acceptance.invoice.plan.qty"].search(
+                    [("id", "in", wa_qty_line_ids), ("order_line_id", "=", self.id)]
+                )
+                return qty[:1].quantity
+            else:
+                installment = self.env["purchase.invoice.plan"].browse(installment_id)
+                return self.product_qty * (installment.percent / 100)
         return super()._get_product_qty()
-
-    def _prepare_account_move_line(self, move=False):
-        res = super()._prepare_account_move_line(move=move)
-        # With wa_id, make correction to the deposit line too (the -qty)
-        wa_id = self.env.context.get("wa_id")
-        if wa_id:
-            wa = self.env["work.acceptance"].browse(wa_id)
-            percent = wa.installment_id.percent
-            if res.get("quantity", 0) < 0:
-                res["quantity"] = res["quantity"] * percent / 100
-        return res
 
 
 class PurchaseInvoicePlan(models.Model):
