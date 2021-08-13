@@ -42,3 +42,11 @@ class PurchaseInvoicePlan(models.Model):
                 )
             )
         return result
+
+    def _no_edit(self):
+        no_edit = super()._no_edit()
+        return no_edit or self.env["work.acceptance"].search_count(
+            [
+                ("installment_id", "=", self.id),
+            ]
+        )
